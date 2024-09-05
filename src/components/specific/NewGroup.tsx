@@ -73,7 +73,7 @@ const NewGroup = () => {
 
         {/* four */}
         <ul>
-          {users.map((user, i) => (
+          {users.map((user) => (
             <UserItem key={user} />
           ))}
         </ul>
