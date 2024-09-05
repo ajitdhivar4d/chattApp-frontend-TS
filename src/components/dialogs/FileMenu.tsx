@@ -31,6 +31,8 @@ const FileMenu: React.FC<FileMenuProps> = ({ anchorEl, chatId }) => {
     dispatch(setIsFileMenu(false));
   };
 
+  console.log(chatId);
+
   const selectImage = () => imageRef.current?.click();
   const selectAudio = () => audioRef.current?.click();
   const selectVideo = () => videoRef.current?.click();

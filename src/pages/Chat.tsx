@@ -22,11 +22,15 @@ interface ChatProps {
 const Chat: React.FC<ChatProps> = ({ chatId, user }) => {
   const dispatch = useAppDispatch();
 
+  console.log(user);
+
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]); // Update the type here based on the message structure
   const [userTyping, setUserTyping] = useState<boolean>(true);
   const [fileMenuAnchor, setFileMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
+
+  console.log(setMessages, setUserTyping);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 

@@ -36,6 +36,8 @@ const Groups = () => {
     useState<string>("");
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
 
+  console.log(isMobileMenuOpen, setGroupName);
+
   const handleMobile = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
@@ -57,9 +59,9 @@ const Groups = () => {
     dispatch(setIsAddMember(true));
   };
 
-  const closeConfirmDeleteHandler = () => {
-    setConfirmDeleteDialog(false);
-  };
+  // const closeConfirmDeleteHandler = () => {
+  //   setConfirmDeleteDialog(false);
+  // };
 
   // IconBtns
   const IconBtns = (
