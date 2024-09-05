@@ -47,7 +47,7 @@ const Search = () => {
         </div>
 
         <ul>
-          {users.map((user, i) => (
+          {users.map((user) => (
             <UserItem key={user} />
           ))}
         </ul>
