@@ -1,0 +1,55 @@
+//
+.all-messages-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: beige;
+  height: 90%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chat-form {
+  height: 10%;
+  .msg-attacheFile-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    padding: 1rem;
+    height: 80%;
+    position: relative;
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 50%;
+      background-color: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .attacheFileBtn {
+      position: absolute;
+      left: 1.5rem;
+      rotate: 30deg;
+    }
+
+    .msgSendBtn {
+      background-color: burlywood;
+      color: black;
+      margin-left: 1rem;
+      &:hover {
+        background-color: gold;
+      }
+    }
+  }
+}

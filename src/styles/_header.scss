@@ -1,0 +1,91 @@
+.header-container-box {
+  display: block;
+  flex-grow: 1;
+  box-sizing: border-box;
+  height: 4rem;
+
+  .app-bar {
+    position: static;
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      min-height: 64px; /* Default height for larger screens */
+      padding: 0 16px; /* Default padding (gutters) */
+      box-sizing: border-box;
+
+      .typography-h6 {
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 500;
+        line-height: 1.6;
+        letter-spacing: 0.0075em;
+        margin: 0;
+      }
+
+      .menu-box {
+        display: none;
+        box-sizing: border-box;
+
+        .icon-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          background: transparent;
+          padding: 8px;
+          border-radius: 50%;
+          cursor: pointer;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.08);
+          }
+        }
+      }
+
+      .grow-box {
+        display: block;
+        box-sizing: border-box;
+        flex-grow: 1;
+      }
+
+      .search-newGroup-manageGroup-notification-logout-box {
+        display: block;
+        box-sizing: border-box;
+
+        //IconBtn
+        .tooltip-container {
+          position: relative;
+          display: inline-block;
+
+          .tooltip-target {
+            padding: 12px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            &:hover .tooltip-content {
+              visibility: visible;
+              opacity: 1;
+            }
+
+            .tooltip-content {
+              visibility: hidden;
+              position: absolute;
+              font-size: 0.75rem;
+              padding: 8px;
+              border-radius: 4px;
+              z-index: 1000;
+              opacity: 0;
+              transition: opacity 0.3s;
+            }
+            .tooltip-content {
+              right: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

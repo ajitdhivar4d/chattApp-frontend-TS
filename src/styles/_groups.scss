@@ -1,0 +1,151 @@
+.groupLayout-grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 6rem);
+
+  .group-grid-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    box-sizing: border-box;
+    height: 100%;
+  }
+
+  .group-grid-item_1 {
+    display: none;
+    height: 100%;
+  }
+  .group-grid-item_2 {
+    position: relative;
+    display: block;
+    height: 100%;
+    grid-column: span 12;
+  }
+}
+
+// groupLayout Grid Container Break Pointes
+@media (min-width: 600px) {
+  .groupLayout-grid-container {
+    .group-grid-item_1 {
+      display: block;
+      grid-column: span 4;
+    }
+    .group-grid-item_2 {
+      display: block;
+      grid-column: span 8;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .groupLayout-grid-container {
+    .group-grid-item_1 {
+      display: block;
+      grid-column: span 4;
+    }
+    .group-grid-item_2 {
+      display: block;
+      grid-column: span 8;
+    }
+  }
+}
+
+// GroupListItem
+.GroupListItem-link {
+  > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+// GroupsList-section
+.GroupsList-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+// groups-iconBtns
+.groups-iconBtns {
+  display: block;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+}
+
+.tooltip-iconBtn {
+  > button {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    background-color: #1c1c1c;
+    color: white;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+
+// groups-iconBtns Break Pointes
+@media (min-width: 600px) {
+  .groups-iconBtns {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+}
+
+//GroupName
+.groupName-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 3rem;
+}
+
+// ButtonGroup
+.buttonGroup-section {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+  padding: 0;
+}
+
+//ButtonGroup Break Pointes
+@media (min-width: 600px) {
+  .buttonGroup-section {
+    flex-direction: row;
+    padding: 1rem 4rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .buttonGroup-section {
+  }
+}
+
+// GroupMembers
+.members-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  max-width: 45rem;
+  box-sizing: border-box;
+  padding: 1rem;
+  height: 50vh;
+  overflow: auto;
+}

@@ -1,0 +1,64 @@
+.appLayout-grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 6rem);
+
+  .grid-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    box-sizing: border-box;
+    height: 100%;
+  }
+
+  .grid-item_1 {
+    display: none;
+    height: 100%;
+  }
+  .grid-item_2 {
+    display: block;
+    height: 100%;
+    grid-column: span 12;
+  }
+  .grid-item_3 {
+    display: none;
+    height: 100%;
+  }
+}
+
+// AppLayout Grid Container Break Pointes
+@media (min-width: 600px) {
+  .appLayout-grid-container {
+    .grid-item_1 {
+      display: block;
+      grid-column: span 5;
+    }
+    .grid-item_2 {
+      display: block;
+      grid-column: span 7;
+    }
+    .grid-item_3 {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .appLayout-grid-container {
+    .grid-item_1 {
+      display: block;
+      grid-column: span 3;
+    }
+    .grid-item_2 {
+      display: block;
+      grid-column: span 6;
+    }
+    .grid-item_3 {
+      display: block;
+      grid-column: span 3;
+    }
+  }
+}

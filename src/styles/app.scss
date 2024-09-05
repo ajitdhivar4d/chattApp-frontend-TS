@@ -1,0 +1,28 @@
+$warm-beige: #fff8e1;
+$Charcoal: #4f4f4f;
+$grayColor: rgba(247, 247, 247, 1);
+
+@import "header";
+@import "search";
+@import "appLayout";
+@import "mediaQuery";
+@import "chatList";
+@import "chat";
+@import "fileMenu";
+@import "profile";
+@import "userItem";
+@import "newGroup";
+@import "groups";
+@import "addMembersDialog";
+@import "notification";
+
+#root {
+  // max-width: 1280px;
+}
+
+body {
+  background-color: $warm-beige;
+  color: $Charcoal;
+  margin: 0 auto;
+  // max-width: 1280px;
+}
