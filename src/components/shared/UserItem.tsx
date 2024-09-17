@@ -1,26 +1,42 @@
 import { CgAdd } from "react-icons/cg";
 import { CiCircleRemove } from "react-icons/ci";
+import { SearchUser } from "../../redux/api/api";
+import Avatar from "./Avatar";
 
-const UserItem = () => {
-  const isAdded = false;
-  const name = "Mohit";
+interface UserItemProps {
+  user: SearchUser;
+  isAdded?: boolean;
+  styling?: React.CSSProperties;
+  handler: (userId: string) => void;
+  handlerIsLoading: boolean;
+}
+
+const UserItem = ({
+  user,
+  handler,
+  handlerIsLoading,
+  isAdded = false,
+  styling = {},
+}: UserItemProps) => {
+  const { name, _id, avatar } = user;
+
   return (
     <li className="userItem-container">
-      <div>
+      <div style={styling}>
         {/* one */}
-        <div>AvatarCard</div>
+        <Avatar src={avatar} size={40} alt="User's Avatar" />
 
         {/* two */}
         <div className="typography">{name}</div>
 
         {/* three */}
-        <div>
+        <button onClick={() => handler(_id)} disabled={handlerIsLoading}>
           {isAdded ? (
             <CiCircleRemove size={24} color="red" />
           ) : (
             <CgAdd size={24} color="lightGreen" />
           )}
-        </div>
+        </button>
       </div>
     </li>
   );

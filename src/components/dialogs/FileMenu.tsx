@@ -13,13 +13,14 @@ import { FiFile } from "react-icons/fi";
 
 interface FileMenuProps {
   anchorEl: HTMLElement | null;
-  chatId: string;
 }
 
-const FileMenu: React.FC<FileMenuProps> = ({ anchorEl, chatId }) => {
+const FileMenu: React.FC<FileMenuProps> = ({ anchorEl }) => {
   // /
   const { isFileMenu } = useAppSelector(selectMiscState);
   const dispatch = useAppDispatch();
+
+  // console.log(anchorEl);
 
   const imageRef = useRef<HTMLInputElement | null>(null);
   const audioRef = useRef<HTMLInputElement | null>(null);
@@ -31,7 +32,7 @@ const FileMenu: React.FC<FileMenuProps> = ({ anchorEl, chatId }) => {
     dispatch(setIsFileMenu(false));
   };
 
-  console.log(chatId);
+  // console.log(chatId);
 
   const selectImage = () => imageRef.current?.click();
   const selectAudio = () => audioRef.current?.click();

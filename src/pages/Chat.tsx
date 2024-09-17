@@ -19,10 +19,10 @@ interface ChatProps {
   user: User;
 }
 
-const Chat: React.FC<ChatProps> = ({ chatId, user }) => {
+const Chat: React.FC<ChatProps> = () => {
   const dispatch = useAppDispatch();
 
-  console.log(user);
+  // console.log(user);
 
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]); // Update the type here based on the message structure
@@ -30,7 +30,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, user }) => {
   const [fileMenuAnchor, setFileMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
 
-  console.log(setMessages, setUserTyping);
+  // console.log(setMessages, setUserTyping);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -94,7 +94,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, user }) => {
         </div>
       </form>
 
-      <FileMenu anchorEl={fileMenuAnchor} chatId={chatId} />
+      <FileMenu anchorEl={fileMenuAnchor} />
     </>
   );
 };

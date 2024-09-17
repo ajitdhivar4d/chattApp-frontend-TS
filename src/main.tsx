@@ -10,7 +10,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <HelmetProvider>
-        <App />
+        <div onContextMenu={(e) => e.preventDefault()}>
+          <App />
+        </div>
       </HelmetProvider>
     </Provider>
   </StrictMode>,

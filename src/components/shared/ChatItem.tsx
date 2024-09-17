@@ -1,21 +1,26 @@
 import { Link } from "../../styles/styledComponent";
 
-// const avatar = [];
-const name = "Mohit";
-const _id = 23;
-// const groupChat = false;
-const sameSender = true;
-const isOnline = true;
-const newMessageAlert = {
-  count: 11,
-};
-// const index = 0;
+interface ChatItemProps {
+  name: string;
+  _id: string;
+  sameSender: boolean;
+  groupChat?: boolean;
+  handleDeleteChat: (e: any | null, chatId: string, groupChat: boolean) => void;
+}
 
-// const handleDeleteChat ;
-
-const ChatItem = () => {
+const ChatItem = ({
+  name,
+  _id,
+  sameSender,
+  groupChat = false,
+  handleDeleteChat,
+}: ChatItemProps) => {
   return (
-    <Link to={`/chat/${_id}`} style={{ padding: 0 }}>
+    <Link
+      to={`/chat/${_id}`}
+      style={{ padding: 0 }}
+      onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
+    >
       <div
         style={{
           display: "flex",
@@ -33,15 +38,15 @@ const ChatItem = () => {
 
         <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
           <p style={{ fontSize: "16px" }}>{name}</p>
-          {newMessageAlert && (
+          {/* {newMessageAlert && (
             <p style={{ fontSize: "16px" }}>
               {newMessageAlert.count} New Message
             </p>
-          )}
+          )} */}
         </div>
         {/* / */}
 
-        {isOnline && (
+        {/* {isOnline && (
           <div
             style={{
               width: "10px",
@@ -54,7 +59,7 @@ const ChatItem = () => {
               transform: "translateY(-50%)",
             }}
           />
-        )}
+        )} */}
       </div>
     </Link>
   );

@@ -1,16 +1,10 @@
 import { FaAt, FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlinePersonPin } from "react-icons/md";
 import { transformImage } from "../../lib/features";
+import moment from "moment";
 
-let img =
-  "https://i.pinimg.com/736x/55/33/5c/55335c708ac05d8f469894d08e2671fa.jpg";
-
-const Profile = () => {
-  const imgC = transformImage(img);
-  const bio = "This is a bio of a person.";
-  const username = "Johndoe";
-  const name = "John Doe";
-  const joinDate = "2 days ago";
+const Profile = ({ user }: { user: any }) => {
+  const imgC = transformImage(user?.avatar?.url);
 
   return (
     <div className="profile-container">
@@ -21,7 +15,7 @@ const Profile = () => {
 
       {/* two */}
       <div className="profile-bio">
-        <p>{bio}</p>
+        <p>{user?.bio}</p>
         <span>Bio</span>
       </div>
 
@@ -29,7 +23,7 @@ const Profile = () => {
       <div className="profile-username">
         <FaAt size={20} />
         <div>
-          <p>{username}</p>
+          <p>{user?.username}</p>
           <span>Username</span>
         </div>
       </div>
@@ -38,7 +32,7 @@ const Profile = () => {
       <div className="profile-name">
         <MdOutlinePersonPin size={20} />
         <div>
-          <p>{name}</p>
+          <p>{user?.name}</p>
           <span>Name</span>
         </div>
       </div>
@@ -47,7 +41,7 @@ const Profile = () => {
       <div className="profile-joinDate">
         <FaRegCalendarAlt size={20} />
         <div>
-          <p>{joinDate}</p>
+          <p>{moment(user?.createdAt).fromNow()}</p>
           <span>Joined</span>
         </div>
       </div>

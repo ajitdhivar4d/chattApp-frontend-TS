@@ -1,0 +1,14 @@
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Circular shape */
+  overflow: hidden; /* Ensure the image fits inside the container */
+  border: 2px solid #ccc; /* Optional: Add border */
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers the container without distortion */
+  }
+}

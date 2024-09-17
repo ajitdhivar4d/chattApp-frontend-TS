@@ -15,6 +15,9 @@ $grayColor: rgba(247, 247, 247, 1);
 @import "groups";
 @import "addMembersDialog";
 @import "notification";
+@import "login";
+@import "deleteChatMenu";
+@import "avatar";
 
 #root {
   // max-width: 1280px;

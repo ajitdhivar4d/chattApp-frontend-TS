@@ -1,15 +1,26 @@
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { BiSearch } from "react-icons/bi";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import {
+  SearchUser,
+  useLazySearchUsersQuery,
+  useSendFriendRequestMutation,
+} from "../../redux/api/api";
 import { selectMiscState, setIsSearch } from "../../redux/reducers/misc";
-import { useState } from "react";
 import UserItem from "../shared/UserItem";
 
 const Search = () => {
+  const { isSearch } = useAppSelector(selectMiscState);
+
+  const [searchUser] = useLazySearchUsersQuery();
+  const [sendFriendRequest, { isLoading: isLoadingSendFriendRequest }] =
+    useSendFriendRequestMutation();
+
   const dispatch = useAppDispatch();
 
-  const users = [1, 2, 3, 4];
-
   const [search, setSearch] = useState<string>("");
+  const [users, setUsers] = useState<SearchUser[]>([]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -17,7 +28,41 @@ const Search = () => {
 
   console.log(search);
 
-  const { isSearch } = useAppSelector(selectMiscState);
+  const addFriendHandler = async (id: string) => {
+    try {
+      const result = await sendFriendRequest({ userId: id });
+      if ("data" in result) {
+        toast.success(
+          result.data?.message ?? "Friend request sent successfully",
+        );
+      } else if ("error" in result) {
+        if (
+          "data" in result.error &&
+          result.error.data &&
+          typeof result.error.data === "object" &&
+          "message" in result.error.data
+        ) {
+          toast.error(result.error.data.message as string);
+        } else {
+          toast.error("An error occurred");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to send friend request:", error);
+    }
+  };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      searchUser({ name: search })
+        .then(({ data }) => setUsers(data?.users || []))
+        .catch((e) => console.log(e));
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [search]);
 
   return (
     <>
@@ -48,7 +93,12 @@ const Search = () => {
 
         <ul>
           {users.map((user) => (
-            <UserItem key={user} />
+            <UserItem
+              key={user._id}
+              user={user}
+              handler={addFriendHandler}
+              handlerIsLoading={isLoadingSendFriendRequest}
+            />
           ))}
         </ul>
       </div>
