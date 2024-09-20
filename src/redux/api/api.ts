@@ -2,6 +2,27 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../constants/config";
 
+interface AcceptFriendRequestResponse {
+  success: boolean;
+  message: string;
+  senderId?: string;
+}
+
+
+export interface AllRequests {
+  _id: string;
+  sender: {
+    _id: string;
+    name: string;
+    avatar: string;
+  };
+}
+
+export interface GetNotificationsResponse {
+  success: boolean;
+  allRequests: AllRequests[];
+}
+
 export interface SendFriendRequestResponse {
   success: boolean;
   message: string;
@@ -50,7 +71,7 @@ export interface MyChatsResponse {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1/` }),
-  tagTypes: ["Chat", "User", "Message"],
+  tagTypes: ["Chat", "User", "Message", "Notifications"],
 
   // Endpoints
   endpoints: (builder) => ({
@@ -105,6 +126,26 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    // #6
+    getNotifications: builder.query<GetNotificationsResponse, void>({
+      query: () => ({
+        url: `user/notifications`,
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0,
+    }),
+
+    // #7
+    acceptFriendRequest: builder.mutation<AcceptFriendRequestResponse, { requestId: string, accept: boolean } >({
+      query: (data) => ({
+        url: "user/acceptrequest",
+        method: "PUT",
+        credentials: "include",
+        body: data,
+      }),
+      invalidatesTags: ["Chat", "Notifications"],
+    }),
   }),
 });
 
@@ -114,4 +155,6 @@ export const {
   useLeaveGroupMutation,
   useLazySearchUsersQuery,
   useSendFriendRequestMutation,
+  useGetNotificationsQuery,
+  useAcceptFriendRequestMutation,
 } = api;

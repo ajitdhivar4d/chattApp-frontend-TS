@@ -1,4 +1,5 @@
 import { Link } from "../../styles/styledComponent";
+import Avatar from "./Avatar";
 
 interface ChatItemProps {
   name: string;
@@ -6,6 +7,7 @@ interface ChatItemProps {
   sameSender: boolean;
   groupChat?: boolean;
   handleDeleteChat: (e: any | null, chatId: string, groupChat: boolean) => void;
+  avatar: string[];
 }
 
 const ChatItem = ({
@@ -14,6 +16,7 @@ const ChatItem = ({
   sameSender,
   groupChat = false,
   handleDeleteChat,
+  avatar = [],
 }: ChatItemProps) => {
   return (
     <Link
@@ -33,7 +36,8 @@ const ChatItem = ({
         }}
       >
         {/* / */}
-        <div>AvatarCard</div>
+        <Avatar src={avatar[0]} size={40} alt="User's Avatar" />
+        
         {/*  */}
 
         <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>

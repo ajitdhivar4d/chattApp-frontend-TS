@@ -1,0 +1,62 @@
+// Variables for easy customization
+$skeleton-bg-color: #e0e0e0;
+$animation-duration: 1.2s;
+$animation-timing: infinite;
+$gradient-color: rgba(255, 255, 255, 0.2);
+
+// Mixin for skeleton animation
+@mixin skeleton-animation {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150px;
+    width: 100px;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      $gradient-color,
+      transparent
+    );
+    animation: loading $animation-duration $animation-timing;
+  }
+}
+
+// Keyframes for loading animation
+@keyframes loading {
+  0% {
+    left: -150px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// Base styles for skeleton
+.skeleton {
+  background-color: $skeleton-bg-color;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+
+  // Apply the skeleton animation mixin
+  @include skeleton-animation;
+
+  // Variants using nesting
+  &.text {
+    width: 80%;
+    height: 20px;
+  }
+
+  &.circle {
+    border-radius: 50%;
+    width: 50px; // Added default width
+    height: 50px; // Added default height
+  }
+
+  &.rect {
+    width: 100%;
+    height: 150px;
+  }
+}

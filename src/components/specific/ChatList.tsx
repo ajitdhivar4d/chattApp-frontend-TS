@@ -26,14 +26,15 @@ const ChatList = ({
       }}
     >
       {chats?.map((data, index) => {
-        const { _id, name, groupChat } = data;
-        console.log(data);
+        const { _id, name, groupChat ,avatar} = data;
+        // console.log(data);
 
         return (
           <ChatItem
             name={name}
             _id={_id}
             key={index}
+            avatar={avatar}
             groupChat={groupChat}
             sameSender={chatId === _id}
             handleDeleteChat={handleDeleteChat}
