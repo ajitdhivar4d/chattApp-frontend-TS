@@ -30,6 +30,9 @@ const Chat: React.FC<ChatProps> = () => {
   const [fileMenuAnchor, setFileMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
 
+  console.log(setMessages);
+  console.log(setUserTyping);
+
   // console.log(setMessages, setUserTyping);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);

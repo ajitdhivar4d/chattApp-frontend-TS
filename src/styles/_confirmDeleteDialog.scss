@@ -1,0 +1,61 @@
+.confirmDeleteDialog-overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  
+    .confirmDeleteDialog-container {
+      background-color: white;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+      .confirmDeleteDialog-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+  
+      .confirmDeleteDialog-content {
+        p {
+          font-size: 16px;
+          margin-bottom: 20px;
+        }
+      }
+  
+      .confirmDeleteDialog-actions {
+        display: flex;
+        justify-content: flex-end;
+  
+        .confirmDeleteDialog-button {
+          background-color: #f0f0f0;
+          border: none;
+          padding: 8px 12px;
+          margin-left: 10px;
+          cursor: pointer;
+          border-radius: 4px;
+  
+          &:hover {
+            background-color: #d9d9d9;
+          }
+  
+          &.confirmDeleteDialog-button-error {
+            background-color: #ff4d4d;
+            color: white;
+  
+            &:hover {
+              background-color: #cc0000;
+            }
+          }
+        }
+      }
+    }
+  }
+  

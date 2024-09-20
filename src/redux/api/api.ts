@@ -1,6 +1,71 @@
-// Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../constants/config";
+
+
+interface AddGroupMembersResponse {
+  success: boolean;
+  message: string;
+}
+
+interface RemoveGroupMemberResponse {
+  success: boolean;
+  message: string;
+}
+
+interface RenameGroupResponse {
+  success: boolean;
+  message: string;
+}
+
+
+interface ChatDetailsResponse {
+  success: boolean;
+  chat: {
+    _id: string;
+    name: string;
+    groupChat: boolean;
+    creator: string;
+    members: {
+      _id: string;
+      name: string;
+      avatar: string;
+    }[];
+  };
+}
+
+
+interface Group {
+  _id: string;
+  name: string;
+  groupChat: boolean;
+  avatar: string[];
+}
+
+interface MyGroupsResponse {
+  success: boolean;
+  groups: Group[];
+}
+
+
+interface NewGroupResponse {
+  success: boolean;
+  message: string;
+}
+
+
+interface AvailableFriend {
+  _id: string;
+  name: string;
+  avatar: string;
+}
+
+
+
+export interface AvailableFriendsResponse {
+  success: boolean;
+  message: string;
+  friends?: AvailableFriend[];
+}
 
 interface AcceptFriendRequestResponse {
   success: boolean;
@@ -137,7 +202,7 @@ export const api = createApi({
     }),
 
     // #7
-    acceptFriendRequest: builder.mutation<AcceptFriendRequestResponse, { requestId: string, accept: boolean } >({
+    acceptFriendRequest: builder.mutation<AcceptFriendRequestResponse, { requestId: string, accept: boolean }>({
       query: (data) => ({
         url: "user/acceptrequest",
         method: "PUT",
@@ -145,6 +210,87 @@ export const api = createApi({
         body: data,
       }),
       invalidatesTags: ["Chat", "Notifications"],
+    }),
+
+    // #8
+    availableFriends: builder.query<AvailableFriendsResponse, { chatId?: string }>({
+      query: ({ chatId }) => {
+        let url = `user/friends`;
+        if (chatId) url += `?chatId=${chatId}`;
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+
+    // #9
+    newGroup: builder.mutation<NewGroupResponse, { name: string, members: string[] }>({
+      query: ({ name, members }) => ({
+        url: "chat/new",
+        method: "POST",
+        credentials: "include",
+        body: { name, members },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // #10
+    myGroups: builder.query<MyGroupsResponse, void>({
+      query: () => ({
+        url: "chat/my/groups",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
+
+    // #11
+    chatDetails: builder.query<ChatDetailsResponse, { chatId: string, populate?: boolean }>({
+      query: ({ chatId, populate = false }) => {
+        let url = `chat/${chatId}`;
+        if (populate) url += "?populate=true";
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+
+    // #12
+    renameGroup: builder.mutation<RenameGroupResponse, { chatId: string, name: string }>({
+      query: ({ chatId, name }) => ({
+        url: `chat/${chatId}`,
+        method: "PUT",
+        credentials: "include",
+        body: { name },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // #13
+    removeGroupMember: builder.mutation<RemoveGroupMemberResponse, { chatId: string, userId: string }>({
+      query: ({ chatId, userId }) => ({
+        url: `chat/removemember`,
+        method: "PUT",
+        credentials: "include",
+        body: { chatId, userId },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // #14
+    addGroupMembers: builder.mutation<AddGroupMembersResponse, { members: string[], chatId: string }>({
+      query: ({ members, chatId }) => ({
+        url: `chat/addmembers`,
+        method: "PUT",
+        credentials: "include",
+        body: { members, chatId },
+      }),
+      invalidatesTags: ["Chat"],
     }),
   }),
 });
@@ -157,4 +303,11 @@ export const {
   useSendFriendRequestMutation,
   useGetNotificationsQuery,
   useAcceptFriendRequestMutation,
+  useAvailableFriendsQuery,
+  useNewGroupMutation,
+  useMyGroupsQuery,
+  useChatDetailsQuery,
+  useRenameGroupMutation,
+  useRemoveGroupMemberMutation,
+  useAddGroupMembersMutation,
 } = api;

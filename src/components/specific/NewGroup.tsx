@@ -1,14 +1,51 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector, useErrors } from "../../hooks/hooks";
 import { selectMiscState, setIsNewGroup } from "../../redux/reducers/misc";
 import UserItem from "../shared/UserItem";
+import { useAvailableFriendsQuery, useNewGroupMutation } from "../../redux/api/api";
+import Skeleton from "../shared/Skeleton";
+import toast from "react-hot-toast";
 
 const NewGroup = () => {
-  const dispatch = useAppDispatch();
-
-  const users = [1, 2, 3, 4];
 
   const [groupName, setGroupName] = useState<string>("");
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+
+  console.log(selectedMembers);
+
+  const dispatch = useAppDispatch();
+
+  const { isNewGroup } = useAppSelector(selectMiscState);
+  const { data, isLoading, isError, error } = useAvailableFriendsQuery({});
+  const [newGroup, { isLoading: isNewGroupLoading, isError: isNewGroupError, error: newGroupError }] = useNewGroupMutation();
+
+  console.log(newGroupError);
+  console.log(newGroupError);
+  console.log(isNewGroupLoading);
+  console.log(newGroup);
+  console.log(isNewGroupError);
+
+
+  const errors = [
+    {
+      isError,
+      error,
+    },
+  ];
+
+  useErrors(errors);
+
+  const selectMemberHandler = (id: string) => {
+    setSelectedMembers((prev) =>
+      prev.includes(id)
+        ? prev.filter((currElement) => currElement !== id)
+        : [...prev, id]
+    );
+  };
+
+  console.log(data?.friends);
+
+
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGroupName(e.target.value);
@@ -16,16 +53,25 @@ const NewGroup = () => {
 
   console.log(groupName);
 
-  const { isNewGroup } = useAppSelector(selectMiscState);
-
-  const submitHandler = () => {
-    console.log("submission");
-
-    closeHandler();
-  };
 
   const closeHandler = () => {
     dispatch(setIsNewGroup(false));
+  };
+
+  const submitHandler = () => {
+
+    if (!groupName) return toast.error("Group name is required");
+
+    if (selectedMembers.length < 2)
+      return toast.error("Please Select Atleast 3 Members");
+
+    newGroup({
+      name: groupName,
+      members: selectedMembers,
+    });
+
+
+    closeHandler();
   };
 
   return (
@@ -73,9 +119,20 @@ const NewGroup = () => {
 
         {/* four */}
         <ul>
-          {users.map((user) => (
-            <UserItem key={user} />
-          ))}
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            data?.friends?.map((i) => (
+              <UserItem
+                user={i}
+                key={i._id}
+                handler={selectMemberHandler}
+                isAdded={selectedMembers.includes(i._id)}
+                handlerIsLoading={isLoading} // Add this line
+              />
+            ))
+          )}
+
         </ul>
 
         {/* five */}

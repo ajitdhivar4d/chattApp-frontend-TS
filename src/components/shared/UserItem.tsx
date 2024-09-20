@@ -8,7 +8,7 @@ interface UserItemProps {
   isAdded?: boolean;
   styling?: React.CSSProperties;
   handler: (userId: string) => void;
-  handlerIsLoading: boolean;
+  handlerIsLoading?: boolean;
 }
 
 const UserItem = ({
@@ -21,7 +21,7 @@ const UserItem = ({
   const { name, _id, avatar } = user;
 
   return (
-    <li className="userItem-container">
+    <li className="userItem-container" style={{listStyle:"none"}}>
       <div style={styling}>
         {/* one */}
         <Avatar src={avatar} size={40} alt="User's Avatar" />
