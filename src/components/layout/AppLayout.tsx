@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 import { useAppDispatch, useAppSelector, useErrors } from "../../hooks/hooks";
@@ -13,6 +13,8 @@ import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
+import toast from "react-hot-toast";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
   return (props: JSX.IntrinsicAttributes) => {
@@ -27,11 +29,32 @@ const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
     const { user } = useAppSelector(selectAuthState);
     const { data, isError, error, isLoading } = useMyChatsQuery("");
 
-    useErrors([{ isError, error }]);
+    useEffect(() => {
+      if (isError) {
+        console.error('Error loading chats:', error);
+        toast.error(((error as FetchBaseQueryError)?.data as { message?: string })?.message || "Something went wrong");
+      }
+    }, [isError, error]);
+
+    // useErrors([{ isError, error }]);
 
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading chats</div>;
 
+    if (isError) {
+      // Assuming error is of type FetchBaseQueryError or SerializedError from RTK Query
+      let errorMessage = 'Error loading chats';
+      
+      if ('status' in error) {
+        // For RTK Query's FetchBaseQueryError
+        errorMessage = `Error ${error.status}: ${(error.data as { message?: string })?.message || 'Unknown error'}`;
+      } else if (error instanceof Error) {
+        // For SerializedError or generic Error
+        errorMessage = error.message;
+      }
+    
+      return <div>{errorMessage}</div>;
+    }
+    
     const handleDeleteChat = (
       e: any | null, // Use a more flexible type to avoid crashes
       chatId: string,
