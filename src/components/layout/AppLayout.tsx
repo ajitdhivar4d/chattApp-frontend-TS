@@ -1,7 +1,9 @@
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
-import { useAppDispatch, useAppSelector, useErrors } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { selectAuthState } from "../../redux/reducers/auth";
 import {
@@ -13,8 +15,6 @@ import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
-import toast from "react-hot-toast";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
   return (props: JSX.IntrinsicAttributes) => {
