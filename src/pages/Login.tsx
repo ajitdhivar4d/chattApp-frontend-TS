@@ -84,9 +84,6 @@ const Login = () => {
 
     const config = {
       withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
     };
 
     try {
@@ -126,7 +123,7 @@ const Login = () => {
       }
       if (file.size > 5 * 1024 * 1024) {
         // Example: 5MB max size
-        toast.error("File size exceeds 2MB.");
+        toast.error("File size exceeds 5MB.");
         return;
       }
 
@@ -238,6 +235,7 @@ const Login = () => {
                               cursor: "pointer",
                             }}
                             type="file"
+                            name="avatar"
                             accept="image/*"
                             onChange={fileHandler}
                           />
