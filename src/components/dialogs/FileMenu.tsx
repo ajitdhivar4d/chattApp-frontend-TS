@@ -30,6 +30,8 @@ const FileMenu: React.FC<FileMenuProps> = ({ anchorEl }) => {
 
   const [sendAttachments] = useSendAttachmentsMutation();
 
+  console.log(sendAttachments);
+
   const closeFileMenu = () => {
     dispatch(setIsFileMenu(false));
   };
