@@ -1,13 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { miscSlice } from "./reducers/misc";
-import { authSlice } from "./reducers/auth";
 import { api } from "./api/api";
+import { authSlice } from "./reducers/auth";
+import { chatSlice } from "./reducers/chat";
+import { miscSlice } from "./reducers/misc";
+
 // ...
 
 export const store = configureStore({
   reducer: {
     misc: miscSlice.reducer,
     auth: authSlice.reducer,
+    chat: chatSlice.reducer,
     api: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>

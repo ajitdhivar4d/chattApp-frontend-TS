@@ -1,0 +1,41 @@
+// Variables for reuse
+$gap-size: 0.5rem;
+$padding-size: 0.5rem;
+$ball-size: 15px;
+$ball-color: lightgray;
+$bounce-height: 10px;
+$animation-duration: 1.2s;
+
+// Typing Loader
+
+// Styling the loader container
+.typing-loader {
+  display: flex;
+  gap: $gap-size;
+  padding: $padding-size;
+  justify-content: center;
+
+  // Nesting bouncing balls inside the loader
+  .bouncing-ball {
+    width: $ball-size;
+    height: $ball-size;
+    background-color: $ball-color;
+    border-radius: 50%;
+    animation: bounce $animation-duration infinite ease-in-out;
+
+    // Add animation delay inline if needed
+  }
+}
+
+// Bouncing animation
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(
+      -$bounce-height
+    ); // Use the variable for bounce height
+  }
+}

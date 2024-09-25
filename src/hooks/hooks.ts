@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../redux/store";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { Socket } from "socket.io-client";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
@@ -20,4 +21,22 @@ export const useErrors = (
       }
     });
   }, [errors]);
+};
+
+// Socket events
+export const useSocketEvents = (
+  socket: Socket | null,
+  handlers: Record<string, (data: any) => void>,
+) => {
+  useEffect(() => {
+    Object.entries(handlers).forEach(([event, handler]) => {
+      socket?.on(event, handler);
+    });
+
+    return () => {
+      Object.entries(handlers).forEach(([event, handler]) => {
+        socket?.off(event, handler);
+      });
+    };
+  }, [socket, handlers]);
 };

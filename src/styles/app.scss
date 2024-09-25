@@ -20,14 +20,8 @@ $grayColor: rgba(247, 247, 247, 1);
 @import "avatar";
 @import "skeleton";
 @import "confirmDeleteDialog";
-
-
-
-
-
-#root {
-  // max-width: 1280px;
-}
+@import "messageComponent";
+@import "loaders";
 
 body {
   background-color: $warm-beige;

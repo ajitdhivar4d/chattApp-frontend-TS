@@ -1,0 +1,36 @@
+.message-component {
+  .message-component-sender {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+    color: rgba(0, 0, 0, 0.6);
+    color: rgb(29, 184, 236);
+  }
+
+  .message-component-timeAgo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+    color: rgba(0, 0, 0, 0.6);
+    color: rgb(152, 114, 201);
+  }
+
+  .message-component-content {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    color: rgba(0, 0, 0, 0.87);
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  }
+
+  .message-component-attachment {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+  }
+}

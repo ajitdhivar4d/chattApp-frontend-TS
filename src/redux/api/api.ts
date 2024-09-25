@@ -1,6 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../constants/config";
 
+interface SendAttachmentsResponse {
+  success: boolean;
+  message: {
+    content: string;
+    attachments: string[];
+    sender: string;
+    chat: string;
+  };
+}
 
 interface AddGroupMembersResponse {
   success: boolean;
@@ -17,7 +26,6 @@ interface RenameGroupResponse {
   message: string;
 }
 
-
 interface ChatDetailsResponse {
   success: boolean;
   chat: {
@@ -33,7 +41,6 @@ interface ChatDetailsResponse {
   };
 }
 
-
 interface Group {
   _id: string;
   name: string;
@@ -46,20 +53,16 @@ interface MyGroupsResponse {
   groups: Group[];
 }
 
-
 interface NewGroupResponse {
   success: boolean;
   message: string;
 }
-
 
 interface AvailableFriend {
   _id: string;
   name: string;
   avatar: string;
 }
-
-
 
 export interface AvailableFriendsResponse {
   success: boolean;
@@ -72,7 +75,6 @@ interface AcceptFriendRequestResponse {
   message: string;
   senderId?: string;
 }
-
 
 export interface AllRequests {
   _id: string;
@@ -202,7 +204,10 @@ export const api = createApi({
     }),
 
     // #7
-    acceptFriendRequest: builder.mutation<AcceptFriendRequestResponse, { requestId: string, accept: boolean }>({
+    acceptFriendRequest: builder.mutation<
+      AcceptFriendRequestResponse,
+      { requestId: string; accept: boolean }
+    >({
       query: (data) => ({
         url: "user/acceptrequest",
         method: "PUT",
@@ -213,7 +218,10 @@ export const api = createApi({
     }),
 
     // #8
-    availableFriends: builder.query<AvailableFriendsResponse, { chatId?: string }>({
+    availableFriends: builder.query<
+      AvailableFriendsResponse,
+      { chatId?: string }
+    >({
       query: ({ chatId }) => {
         let url = `user/friends`;
         if (chatId) url += `?chatId=${chatId}`;
@@ -227,7 +235,10 @@ export const api = createApi({
     }),
 
     // #9
-    newGroup: builder.mutation<NewGroupResponse, { name: string, members: string[] }>({
+    newGroup: builder.mutation<
+      NewGroupResponse,
+      { name: string; members: string[] }
+    >({
       query: ({ name, members }) => ({
         url: "chat/new",
         method: "POST",
@@ -247,7 +258,10 @@ export const api = createApi({
     }),
 
     // #11
-    chatDetails: builder.query<ChatDetailsResponse, { chatId: string, populate?: boolean }>({
+    chatDetails: builder.query<
+      ChatDetailsResponse,
+      { chatId: string; populate?: boolean }
+    >({
       query: ({ chatId, populate = false }) => {
         let url = `chat/${chatId}`;
         if (populate) url += "?populate=true";
@@ -261,7 +275,10 @@ export const api = createApi({
     }),
 
     // #12
-    renameGroup: builder.mutation<RenameGroupResponse, { chatId: string, name: string }>({
+    renameGroup: builder.mutation<
+      RenameGroupResponse,
+      { chatId: string; name: string }
+    >({
       query: ({ chatId, name }) => ({
         url: `chat/${chatId}`,
         method: "PUT",
@@ -272,7 +289,10 @@ export const api = createApi({
     }),
 
     // #13
-    removeGroupMember: builder.mutation<RemoveGroupMemberResponse, { chatId: string, userId: string }>({
+    removeGroupMember: builder.mutation<
+      RemoveGroupMemberResponse,
+      { chatId: string; userId: string }
+    >({
       query: ({ chatId, userId }) => ({
         url: `chat/removemember`,
         method: "PUT",
@@ -283,7 +303,10 @@ export const api = createApi({
     }),
 
     // #14
-    addGroupMembers: builder.mutation<AddGroupMembersResponse, { members: string[], chatId: string }>({
+    addGroupMembers: builder.mutation<
+      AddGroupMembersResponse,
+      { members: string[]; chatId: string }
+    >({
       query: ({ members, chatId }) => ({
         url: `chat/addmembers`,
         method: "PUT",
@@ -291,6 +314,25 @@ export const api = createApi({
         body: { members, chatId },
       }),
       invalidatesTags: ["Chat"],
+    }),
+
+    // #15
+    getMessages: builder.query<any, { chatId: string; page: number }>({
+      query: ({ chatId, page }) => ({
+        url: `chat/message/${chatId}?page=${page}`,
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0,
+    }),
+
+    // #16
+    sendAttachments: builder.mutation<SendAttachmentsResponse, any>({
+      query: (data) => ({
+        url: "chat/message",
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
     }),
   }),
 });
@@ -310,4 +352,6 @@ export const {
   useRenameGroupMutation,
   useRemoveGroupMemberMutation,
   useAddGroupMembersMutation,
+  useGetMessagesQuery,
+  useSendAttachmentsMutation,
 } = api;

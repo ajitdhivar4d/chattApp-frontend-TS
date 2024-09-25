@@ -15,6 +15,7 @@ import axios from "axios";
 import { server } from "../../constants/config";
 import { userNotExists } from "../../redux/reducers/auth";
 import toast from "react-hot-toast";
+import { selectChatState } from "../../redux/reducers/chat";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
@@ -24,6 +25,8 @@ const Header = () => {
   const dispatch = useAppDispatch();
   const { isSearch, isNewGroup, isNotification } =
     useAppSelector(selectMiscState);
+
+  const { notificationCount } = useAppSelector(selectChatState);
 
   const navigate = useNavigate();
 
@@ -91,6 +94,7 @@ const Header = () => {
                 title={"Notifications"}
                 icon={<BiSolidNotification color="black" size={24} />}
                 onClick={openNotification}
+                value={notificationCount}
               />
 
               <IconBtn
@@ -126,14 +130,16 @@ interface IconBtnProps {
   title: string;
   icon: React.ReactNode;
   onClick: () => void;
+  value?: number;
 }
 
-const IconBtn: React.FC<IconBtnProps> = ({ title, icon, onClick }) => {
+const IconBtn: React.FC<IconBtnProps> = ({ title, icon, onClick, value }) => {
   return (
     <div className="tooltip-container">
       <button className="tooltip-target" onClick={onClick}>
         {icon}
         <div className="tooltip-content">{title}</div>
+        {value}
       </button>
     </div>
   );

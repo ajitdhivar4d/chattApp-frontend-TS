@@ -12,6 +12,7 @@ import {
 import { server } from "./constants/config";
 import axios from "axios";
 import ProtectRoute from "./components/auth/ProtectRoute";
+import { SocketProvider } from "./socket";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -31,10 +32,28 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    axios
-      .get(`${server}/api/v1/user/me`, { withCredentials: true })
-      .then(({ data }) => dispatch(userExists(data?.user)))
-      .catch(() => dispatch(userNotExists()));
+    let isMounted = true; // track if the component is mounted
+
+    const fetchUserData = async () => {
+      try {
+        const { data } = await axios.get(`${server}/api/v1/user/me`, {
+          withCredentials: true,
+        });
+        if (isMounted) {
+          dispatch(userExists(data?.user));
+        }
+      } catch {
+        if (isMounted) {
+          dispatch(userNotExists());
+        }
+      }
+    };
+
+    fetchUserData();
+
+    return () => {
+      isMounted = false; // cleanup to avoid state update on unmounted component
+    };
   }, [dispatch]);
 
   return loader ? (
@@ -44,7 +63,13 @@ const App = () => {
       <Suspense fallback={<LayoutLoader />}>
         <Routes>
           {/* User  */}
-          <Route element={<ProtectRoute user={user} />}>
+          <Route
+            element={
+              <SocketProvider>
+                <ProtectRoute user={user} />
+              </SocketProvider>
+            }
+          >
             <Route path="/" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Groups />} />
@@ -54,7 +79,7 @@ const App = () => {
           <Route
             path="/login"
             element={
-              <ProtectRoute user={!user} redirect="/">
+              <ProtectRoute user={user} redirect="/">
                 <Login />
               </ProtectRoute>
             }

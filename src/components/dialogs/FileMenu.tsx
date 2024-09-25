@@ -10,6 +10,7 @@ import {
 } from "../../redux/reducers/misc";
 import { CiVideoOn } from "react-icons/ci";
 import { FiFile } from "react-icons/fi";
+import { useSendAttachmentsMutation } from "../../redux/api/api";
 
 interface FileMenuProps {
   anchorEl: HTMLElement | null;
@@ -27,12 +28,11 @@ const FileMenu: React.FC<FileMenuProps> = ({ anchorEl }) => {
   const videoRef = useRef<HTMLInputElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  const closeFileMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const [sendAttachments] = useSendAttachmentsMutation();
+
+  const closeFileMenu = () => {
     dispatch(setIsFileMenu(false));
   };
-
-  // console.log(chatId);
 
   const selectImage = () => imageRef.current?.click();
   const selectAudio = () => audioRef.current?.click();

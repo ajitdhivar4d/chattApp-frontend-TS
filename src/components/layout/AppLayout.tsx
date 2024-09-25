@@ -1,82 +1,122 @@
+import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
-import { JSX } from "react/jsx-runtime";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useCallback, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { NEW_REQUEST, REFETCH_CHATS } from "../../constants/events";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useErrors,
+  useSocketEvents,
+} from "../../hooks/hooks";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { selectAuthState } from "../../redux/reducers/auth";
+import { incrementNotification } from "../../redux/reducers/chat";
 import {
   setIsDeleteMenu,
   setSelectedDeleteChat,
 } from "../../redux/reducers/misc";
+import { useSocket } from "../../socket";
 import DeleteChatMenu from "../dialogs/DeleteChatMenu";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
 
+// Higher-order component to wrap a component with layout
 const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
-  return (props: JSX.IntrinsicAttributes) => {
-    const params = useParams();
-    const dispatch = useAppDispatch();
+  const ComponentWithLayout = (props: any) => {
+    const navigate = useNavigate();
 
+    // Hook to retrieve URL parameters
+    const params = useParams();
+
+    // Redux hooks
+    const dispatch = useAppDispatch();
+    const socket = useSocket();
+
+    console.log(socket);
+
+    // State to manage the anchor element for the delete menu
     const [deleteMenuAnchorEl, setDeleteMenuAnchorEl] =
       useState<HTMLButtonElement | null>(null);
 
+    // Extract chatId from URL parameters
     const chatId = params.chatId ?? "";
 
+    // Select user data from the Redux store
     const { user } = useAppSelector(selectAuthState);
-    const { data, isError, error, isLoading } = useMyChatsQuery("");
 
-    useEffect(() => {
-      if (isError) {
-        console.error('Error loading chats:', error);
-        toast.error(((error as FetchBaseQueryError)?.data as { message?: string })?.message || "Something went wrong");
-      }
-    }, [isError, error]);
+    // Fetch chats from the API
+    const { data, isError, error, isLoading, refetch } = useMyChatsQuery("");
 
-    // useErrors([{ isError, error }]);
+    // Handle errors globally
+    useErrors([{ isError, error }]);
 
-    if (isLoading) return <div>Loading...</div>;
-
-    if (isError) {
-      // Assuming error is of type FetchBaseQueryError or SerializedError from RTK Query
-      let errorMessage = 'Error loading chats';
-      
-      if ('status' in error) {
-        // For RTK Query's FetchBaseQueryError
-        errorMessage = `Error ${error.status}: ${(error.data as { message?: string })?.message || 'Unknown error'}`;
-      } else if (error instanceof Error) {
-        // For SerializedError or generic Error
-        errorMessage = error.message;
-      }
-    
-      return <div>{errorMessage}</div>;
-    }
-    
+    // Function to handle chat deletion
     const handleDeleteChat = (
-      e: any | null, // Use a more flexible type to avoid crashes
+      e: any | null,
       chatId: string,
       groupChat: boolean,
     ) => {
       console.log(chatId);
-      dispatch(setIsDeleteMenu(true));
-      dispatch(setSelectedDeleteChat({ chatId, groupChat }));
+      dispatch(setIsDeleteMenu(true)); // Show delete menu
+      dispatch(setSelectedDeleteChat({ chatId, groupChat })); // Set selected chat for deletion
 
-      setDeleteMenuAnchorEl(e.currentTarget);
+      // Set the anchor element for the delete menu
+      if (e) {
+        setDeleteMenuAnchorEl(e.currentTarget);
+      }
     };
 
-    // console.log(data);
+    // Listener for new requests
+    const newRequestListener = useCallback(() => {
+      dispatch(incrementNotification()); // Increment notification count
+      console.log("New request received");
+    }, [dispatch]);
 
-    //  const { user } = useSelector((state) => state.auth);
+    // Listener for refetching chats
+    const refetchListener = useCallback(() => {
+      console.log("Refetching chats");
+      refetch();
+      navigate("/");
+    }, [refetch, navigate]);
+
+    // Map event handlers
+    const eventHandlers = {
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener,
+    };
+
+    // Setup socket event listeners
+    useSocketEvents(socket, eventHandlers);
+
+    // Conditional rendering for loading and error states
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+
+    if (isError) {
+      return (
+        <div>
+          {`Error ${(error as FetchBaseQueryError)?.status || "Unknown"}: ${
+            ((error as FetchBaseQueryError)?.data as { message?: string })
+              ?.message ||
+            (error as SerializedError)?.message ||
+            "An unknown error occurred"
+          }`}
+        </div>
+      );
+    }
+
+    // Main layout rendering
     return (
       <>
         <Title />
         <Header />
         <DeleteChatMenu deleteMenuAnchorEl={deleteMenuAnchorEl} />
         <div className="appLayout-grid-container">
-          {/* one */}
+          {/* Chat list section */}
           <div className="grid-item_1 grid-item">
             <ChatList
               chatId={chatId ?? ""}
@@ -85,12 +125,12 @@ const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
             />
           </div>
 
-          {/* two */}
+          {/* Wrapped component section */}
           <div className="grid-item_2 grid-item">
             <WrappedComponent {...props} chatId={chatId} user={user} />
           </div>
 
-          {/* three */}
+          {/* Profile section */}
           <div className="grid-item_3 grid-item">
             <Profile user={user} />
           </div>
@@ -98,6 +138,8 @@ const AppLayout = () => (WrappedComponent: React.ComponentType<any>) => {
       </>
     );
   };
+
+  return ComponentWithLayout;
 };
 
 export default AppLayout;
