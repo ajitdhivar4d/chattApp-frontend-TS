@@ -3,7 +3,7 @@ import { User } from "../../redux/reducers/auth";
 
 interface ProtectRouteProps {
   children?: React.ReactNode;
-  user: User | null; // Replace 'any' with the actual type of the user if known
+  user: User | null | boolean; // Replace 'any' with the actual type of the user if known
   redirect?: string;
 }
 

@@ -7,6 +7,7 @@ import {
 import { selectMiscState, setIsNotification } from "../../redux/reducers/misc";
 import Avatar from "../shared/Avatar";
 import Skeleton from "../shared/Skeleton";
+import { resetNotificationCount } from "../../redux/reducers/chat";
 
 interface NotificationItemProps {
   sender: { name: string; avatar: string };
@@ -34,6 +35,7 @@ const Notifications = () => {
           accept,
         }).unwrap();
         dispatch(setIsNotification(false));
+        dispatch(resetNotificationCount());
       } catch (error) {
         console.error("Failed to handle friend request:", error);
       }

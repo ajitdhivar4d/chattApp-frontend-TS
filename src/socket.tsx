@@ -3,70 +3,100 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useState,
+  useRef,
   useMemo,
 } from "react";
 import io, { Socket } from "socket.io-client";
 import { server } from "./constants/config";
 
-// Define the expected events or types for your socket instance
+// Define types for socket events that the server sends to the client
 interface ServerToClientEvents {
-  message: (data: string) => void;
+  message: (data: string) => void; // Message event sent by the server
+  reconnect_attempt: (attempt: number) => void; // Event for reconnection attempts
+  reconnect_error: (error: Error) => void; // Event for reconnection errors
+  error: (error: Error) => void; // General error event
 }
 
+// Define types for socket events that the client sends to the server
 interface ClientToServerEvents {
-  sendMessage: (data: string) => void;
+  sendMessage: (data: string) => void; // Send message to server
 }
 
-// Initialize the Socket context with the specific type
+// Create a context to hold the socket connection, initialized as `null`
 const SocketContext = createContext<Socket<
   ServerToClientEvents,
   ClientToServerEvents
 > | null>(null);
 
-// Custom hook to access the socket
-const useSocket = () => {
-  const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error("useSocket must be used within a SocketProvider");
-  }
-  return context;
-};
+// Custom hook to access the socket instance
+const useSocket = () => useContext(SocketContext);
 
-// SocketProvider component
+// SocketProvider component to manage the socket connection and provide it to child components
 const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const socket = useMemo(() => {
-    const newSocket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-      server,
-      {
-        withCredentials: true,
-      },
-    );
+  // State to store the current socket instance
+  const [socket, setSocket] = useState<Socket<
+    ServerToClientEvents,
+    ClientToServerEvents
+  > | null>(null);
 
-    newSocket.on("connect", () => {
-      console.log("Connected to socket server");
-    });
-
-    newSocket.on("connect_error", (err) => {
-      console.error("Socket connection error:", err);
-    });
-
-    newSocket.on("disconnect", (reason) => {
-      console.log("Disconnected from socket server:", reason);
-    });
-
-    return newSocket; // The socket instance will be the same until the provider unmounts
-  }, []); // The empty array ensures the socket is created only once
+  // useRef to hold the socket instance, ensuring it persists across re-renders
+  const socketRef = useRef<Socket<
+    ServerToClientEvents,
+    ClientToServerEvents
+  > | null>(null);
 
   useEffect(() => {
-    // Cleanup function to disconnect socket when the provider unmounts
+    // If no socket is initialized, create a new connection
+    if (!socketRef.current) {
+      socketRef.current = io(server, { withCredentials: true }); // Connect to the server
+
+      // Event: Socket successfully connected
+      socketRef.current.on("connect", () => {
+        console.log("Socket connected:", socketRef.current?.id);
+        setSocket(socketRef.current); // Set the connected socket instance in state
+      });
+
+      // Event: Socket disconnected
+      socketRef.current.on("disconnect", (reason) => {
+        console.warn("Socket disconnected:", reason);
+        setSocket(null); // Clear the socket instance when disconnected
+      });
+
+      // Event: Reconnection attempts
+      socketRef.current.on("reconnect_attempt", (attempt: number) => {
+        console.log(`Reconnect attempt #${attempt}`);
+      });
+
+      // Event: Error during reconnection
+      socketRef.current.on("reconnect_error", (error: Error) => {
+        console.error("Reconnect error:", error);
+      });
+
+      // Event: General socket error
+      socketRef.current.on("error", (error: Error) => {
+        console.error("Socket error:", error);
+      });
+    }
+
+    // Cleanup: Disconnect socket when component unmounts
     return () => {
-      socket.disconnect();
-      console.log("Socket disconnected");
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        console.log("Socket disconnected");
+      }
     };
-  }, [socket]); // This ensures that the cleanup happens correctly
+  }, []); // Empty dependency array ensures this effect only runs on mount/unmount
+
+  // Memoize the context value to avoid unnecessary re-renders when the socket hasn't changed
+  const contextValue = useMemo(() => socket, [socket]);
 
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    // Provide the memoized socket instance to child components
+    <SocketContext.Provider value={contextValue}>
+      {children}
+    </SocketContext.Provider>
   );
 };
 
